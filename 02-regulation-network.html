@@ -3,34 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EU Regulations – Relationship Network</title>
+<title>EU Regulations – Filterable Overview Table</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ── Theme variables ───────────────────────────────────────────── */
 :root {
   --font-sans: 'Inter', system-ui, sans-serif;
-  --color-background-primary:   #ffffff;
-  --color-background-secondary: #f5f5f3;
-  --color-background-tertiary:  #eeede9;
-  --color-text-primary:   #1a1a18;
-  --color-text-secondary: #5f5e5a;
-  --color-text-tertiary:  #8e8c84;
-  --color-border-secondary: rgba(0,0,0,0.18);
-  --color-border-primary:   rgba(0,0,0,0.28);
+  --color-background-primary:   #FFFFFF;
+  --color-background-secondary: #F8F0E2;   /* DIHR warm cream */
+  --color-background-tertiary:  #F0E8D8;   /* page background */
+  --color-text-primary:   #0F294A;         /* DIHR dark navy */
+  --color-text-secondary: #3E536E;         /* DIHR mid navy */
+  --color-text-tertiary:  #6F7E92;         /* DIHR light grey-navy */
+  --color-border-secondary: rgba(15, 41, 74, 0.15);
+  --color-border-primary:   rgba(15, 41, 74, 0.30);
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background-primary:   #1a1a18;
-    --color-background-secondary: #242422;
-    --color-background-tertiary:  #2e2e2c;
-    --color-text-primary:   #e8e6dc;
-    --color-text-secondary: #b4b2a9;
-    --color-text-tertiary:  #73726c;
-    --color-border-secondary: rgba(255,255,255,0.16);
-    --color-border-primary:   rgba(255,255,255,0.28);
+    --color-background-primary:   #0A192B;   /* DIHR darkest navy */
+    --color-background-secondary: #0F294A;   /* DIHR dark navy */
+    --color-background-tertiary:  #05070C;   /* near-black */
+    --color-text-primary:   #F8F0E2;         /* DIHR warm cream */
+    --color-text-secondary: #A1C5CC;         /* DIHR light teal */
+    --color-text-tertiary:  #6F7E92;
+    --color-border-secondary: rgba(248, 240, 226, 0.15);
+    --color-border-primary:   rgba(248, 240, 226, 0.30);
   }
 }
 
@@ -45,15 +45,24 @@ body {
   padding: 24px 20px 48px;
 }
 
+/* ── Page header ───────────────────────────────────────────────── */
 .page-header {
-  max-width: 760px;
+  max-width: 960px;
   margin: 0 auto 20px;
 }
-.page-header h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
-.page-header p  { font-size: 13px; color: var(--color-text-secondary); }
+.page-header h1 {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.page-header p {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
 
+/* ── Card wrapper ──────────────────────────────────────────────── */
 .card {
-  max-width: 760px;
+  max-width: 960px;
   margin: 0 auto;
   background: var(--color-background-primary);
   border: 0.5px solid var(--color-border-secondary);
@@ -61,55 +70,118 @@ body {
   padding: 20px;
 }
 
-.legend {
+/* ── Controls ──────────────────────────────────────────────────── */
+.controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 14px;
-  font-size: 12px;
-  color: var(--color-text-secondary);
 }
-.leg-item { display: flex; align-items: center; gap: 5px; }
-.leg-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-
-#net-wrap { position: relative; width: 100%; }
-#net-canvas { display: block; width: 100%; cursor: default; }
-
-#detail-panel {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border: 0.5px solid var(--color-border-secondary);
-  border-radius: var(--border-radius-md);
+.controls select, .controls input {
+  font-family: var(--font-sans);
   font-size: 13px;
-  min-height: 60px;
-  background: var(--color-background-secondary);
-  color: var(--color-text-secondary);
-  line-height: 1.55;
-}
-#detail-panel strong {
-  color: var(--color-text-primary);
-  font-weight: 500;
-  display: block;
-  margin-bottom: 4px;
-}
-
-#tooltip {
-  position: fixed;
-  pointer-events: none;
-  font-size: 12px;
-  background: var(--color-background-primary);
+  padding: 6px 10px;
   border: 0.5px solid var(--color-border-secondary);
   border-radius: var(--border-radius-md);
-  padding: 8px 12px;
-  max-width: 220px;
-  z-index: 99;
-  display: none;
+  background: var(--color-background-primary);
   color: var(--color-text-primary);
-  line-height: 1.5;
+  outline: none;
+  min-width: 0;
+}
+.controls input { flex: 1 1 160px; }
+.controls select:focus, .controls input:focus {
+  border-color: var(--color-border-primary);
+}
+.count-bar {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 8px;
 }
 
+/* ── Table ─────────────────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+col.c1 { width: 20%; }
+col.c2 { width: 14%; }
+col.c3 { width: 13%; }
+col.c4 { width: 14%; }
+col.c5 { width: 39%; }
+thead th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-bottom: 0.5px solid var(--color-border-secondary);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+thead th:hover { color: var(--color-text-primary); }
+thead th.sorted { color: var(--color-text-primary); }
+thead th .sort-icon { opacity: .4; margin-left: 4px; }
+thead th.sorted .sort-icon { opacity: 1; }
+tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); transition: background .12s; }
+tbody tr:hover { background: var(--color-background-secondary); }
+td { padding: 9px 10px; vertical-align: top; overflow: hidden; }
+.empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 32px;
+  font-size: 13px;
+}
+
+/* ── Pills ─────────────────────────────────────────────────────── */
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.pill.due   { background:#C0D8DD; color:#0F294A; }
+.pill.rep   { background:#C0D8DD; color:#3E536E; }
+.pill.imp   { background:#F8F0E2; color:#9D1C29; }
+.pill.trade { background:#F8F0E2; color:#C32032; }
+.pill.rules { background:#E7DCED; color:#4F4872; }
+@media (prefers-color-scheme: dark) {
+  .pill.due   { background:#085041; color:#9FE1CB; }
+  .pill.rep   { background:#0C447C; color:#B5D4F4; }
+  .pill.imp   { background:#633806; color:#FAC775; }
+  .pill.trade { background:#72243E; color:#F4C0D1; }
+  .pill.rules { background:#3C3489; color:#CECBF6; }
+}
+
+/* ── Stage badges ──────────────────────────────────────────────── */
+.stage-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.in-force          { background:#C0D8DD; color:#0F294A; }
+.in-force-partial  { background:#F8F0E2; color:#9D1C29; }
+.pending           { background:#E7A5AD; color:#9D1C29; }
+.stalled           { background:#F8F0E2; color:#6F7E92; }
+@media (prefers-color-scheme: dark) {
+  .in-force         { background:#27500A; color:#C0DD97; }
+  .in-force-partial { background:#633806; color:#FAC775; }
+  .pending          { background:#791F1F; color:#F7C1C1; }
+  .stalled          { background:#444441; color:#D3D1C7; }
+}
+
+/* ── Footer note ───────────────────────────────────────────────── */
 .footer-note {
-  max-width: 760px;
+  max-width: 960px;
   margin: 12px auto 0;
   font-size: 11px;
   color: var(--color-text-tertiary);
@@ -119,250 +191,168 @@ body {
 <body>
 
 <div class="page-header">
-  <h1>EU Regulations – Relationship Network</h1>
-  <p>Click any node to highlight its connections and read a short description. Source: DIHR, <em>Pieces of the Puzzle</em> (February 2026).</p>
+  <h1>EU Regulatory Initiatives – Business &amp; Human Rights</h1>
+  <p>Overview of EU regulatory measures and their relationship to business and human rights frameworks. Source: DIHR, <em>Pieces of the Puzzle</em> (February 2026).</p>
 </div>
 
 <div class="card">
-  <div class="legend">
-    <span class="leg-item"><span class="leg-dot" style="background:#534AB7"></span>Corporate sustainability</span>
-    <span class="leg-item"><span class="leg-dot" style="background:#185FA5"></span>Finance sector</span>
-    <span class="leg-item"><span class="leg-dot" style="background:#854F0B"></span>Trade &amp; import/export</span>
-    <span class="leg-item"><span class="leg-dot" style="background:#3B6D11"></span>Green transition</span>
-    <span class="leg-item"><span class="leg-dot" style="background:#993556"></span>Digital ecosystem</span>
-    <span class="leg-item"><span class="leg-dot" style="background:#5F5E5A"></span>Public procurement</span>
+  <div class="controls">
+    <input id="search" placeholder="Search regulations…" oninput="render()">
+    <select id="cat" onchange="render()">
+      <option value="">All categories</option>
+      <option>Corporate sustainability</option>
+      <option>Finance sector</option>
+      <option>Trade &amp; import/export</option>
+      <option>Green transition</option>
+      <option>Digital ecosystem</option>
+      <option>Public procurement</option>
+    </select>
+    <select id="nature" onchange="render()">
+      <option value="">All obligation types</option>
+      <option>Due diligence</option>
+      <option>Reporting</option>
+      <option>Import control</option>
+      <option>Trade control</option>
+      <option>Rules</option>
+    </select>
+    <select id="stage" onchange="render()">
+      <option value="">All stages</option>
+      <option>In force</option>
+      <option>In force – applying later</option>
+      <option>Pending / under revision</option>
+      <option>Stalled</option>
+    </select>
   </div>
-
-  <div id="net-wrap">
-    <canvas id="net-canvas"></canvas>
-  </div>
-
-  <div id="detail-panel">
-    Click any regulation node to see its connections and a short description.
+  <div class="count-bar" id="count"></div>
+  <div class="tbl-wrap">
+    <table>
+      <colgroup>
+        <col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5">
+      </colgroup>
+      <thead>
+        <tr>
+          <th onclick="sort('name')"     id="h-name">    Regulation <span class="sort-icon">↕</span></th>
+          <th onclick="sort('category')" id="h-category">Category <span class="sort-icon">↕</span></th>
+          <th onclick="sort('nature')"   id="h-nature">  Obligation <span class="sort-icon">↕</span></th>
+          <th onclick="sort('stage')"    id="h-stage">   Stage <span class="sort-icon">↕</span></th>
+          <th>Key cross-links</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
   </div>
 </div>
 
-<div class="footer-note">
-  Node size reflects approximate centrality in the regulatory web. Connections reflect explicit cross-references in the source document.
-</div>
-
-<div id="tooltip"></div>
+<p class="footer-note">
+  Stages and cross-links reflect the document as of February 2026. Omnibus I is ongoing — some details may evolve.
+  To update data, edit the <code>data</code> array in the &lt;script&gt; block below.
+</p>
 
 <script>
-const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
-
-const catColor = {
-  corporate: isDark ? "#AFA9EC" : "#534AB7",
-  finance:   isDark ? "#85B7EB" : "#185FA5",
-  trade:     isDark ? "#FAC775" : "#854F0B",
-  green:     isDark ? "#97C459" : "#3B6D11",
-  digital:   isDark ? "#ED93B1" : "#993556",
-  proc:      isDark ? "#B4B2A9" : "#5F5E5A",
-};
-
-const nodes = [
-  { id:"CSDDD",     label:"CSDDD",          cat:"corporate", r:22, desc:"Corporate Sustainability Due Diligence Directive. The core mandatory human rights and environmental due diligence obligation for large companies operating in the EU." },
-  { id:"CSRD",      label:"CSRD",           cat:"corporate", r:18, desc:"Corporate Sustainability Reporting Directive. Requires large companies to disclose sustainability impacts. Acts as the reporting arm of the CSDDD." },
-  { id:"ESRS",      label:"ESRS",           cat:"corporate", r:14, desc:"European Sustainability Reporting Standards. The technical standards companies use to report under CSRD; being simplified under Omnibus I." },
-  { id:"SFDR",      label:"SFDR",           cat:"finance",   r:14, desc:"Sustainable Finance Disclosure Regulation. Requires financial market participants to disclose sustainability risk and adverse impact information. Under revision." },
-  { id:"TAXON",     label:"Taxonomy",       cat:"finance",   r:16, desc:"Green Taxonomy Regulation. Classifies environmentally sustainable economic activities. Art. 18 requires human rights minimum safeguards aligned with UNGPs." },
-  { id:"STAXON",    label:"Social\nTax.",   cat:"finance",   r:11, desc:"Social Taxonomy (proposed). A potential extension of the Green Taxonomy to cover social/human rights dimensions. Currently stalled." },
-  { id:"ESGREG",    label:"ESG\nRatings",  cat:"finance",   r:11, desc:"ESG Ratings Regulation. Requires ESG rating providers to be authorised and supervised by ESMA. Aims to improve transparency and reduce greenwashing." },
-  { id:"BENCH",     label:"Benchmarks",    cat:"finance",   r:10, desc:"EU Benchmarks Regulation. Sets rules for financial benchmarks including ESG-related metrics and climate transition benchmarks." },
-  { id:"CONFLICTS", label:"Conflict\nMin.",cat:"trade",     r:13, desc:"Conflict Minerals Regulation. Sector-specific due diligence for EU importers of 3TG minerals (Tin, Tantalum, Tungsten, Gold) from conflict-affected areas." },
-  { id:"TIMBER",    label:"Timber\nReg.",  cat:"trade",     r:10, desc:"EU Timber Regulation. Due diligence obligation for timber importers. Being repealed and replaced by the Deforestation Regulation." },
-  { id:"DEFOREST",  label:"Deforest.\nReg.",cat:"trade",   r:13, desc:"Deforestation Regulation. Replaces the Timber Regulation. Requires due diligence to ensure products are deforestation-free before entering the EU market." },
-  { id:"FORCED",    label:"Forced\nLabour",cat:"trade",    r:13, desc:"Forced Labour Regulation. Bans goods made with forced labour from the EU market. Companies' due diligence performance is considered during enforcement." },
-  { id:"BATTERIES", label:"Batteries\nReg.",cat:"green",   r:14, desc:"Batteries Regulation. Includes sector-specific due diligence requirements for battery supply chains, including on responsible sourcing of raw materials." },
-  { id:"CRMA",      label:"CRMA",          cat:"green",    r:13, desc:"Critical Raw Materials Act. CSDDD compliance is a factor in granting 'strategic project' status, which brings streamlined permitting and financing benefits." },
-  { id:"DSA",       label:"DSA",           cat:"digital",  r:12, desc:"Digital Services Act. Regulates online platforms and search engines. Applies without prejudice to GDPR; AI Act does not affect DSA application." },
-  { id:"AIACT",     label:"AI Act",        cat:"digital",  r:13, desc:"Artificial Intelligence Act. Risk-based regulation of AI systems. Aligns structurally with the UNGP due diligence approach for high-risk AI." },
-  { id:"GPSR",      label:"GPSR",          cat:"digital",  r:10, desc:"General Product Safety Regulation. Safety net for products not covered by specific EU sectoral legislation, including some AI-adjacent products." },
-  { id:"GDPR",      label:"GDPR",          cat:"digital",  r:12, desc:"General Data Protection Regulation. Core rules on the processing of personal data. Applies without prejudice alongside the DSA and AI Act." },
-  { id:"DUALUSE",   label:"Dual-Use\nReg.",cat:"trade",   r:10, desc:"Dual-Use Export Control Regulation. Controls exports of goods, software, and technology usable for both civilian and military/human rights-violating purposes." },
-  { id:"PPD",       label:"Public\nProc.", cat:"proc",     r:11, desc:"Public Procurement Directive. Art. 31 states that CSDDD compliance qualifies as an environmental or social criterion in procurement award decisions." },
+const data = [
+  { name:"CSDDD", full:"Corporate Sustainability Due Diligence Directive", category:"Corporate sustainability", nature:"Due diligence", stage:"In force – applying later", stageClass:"in-force-partial",
+    links:"CSRD (disclosure arm), Conflict Minerals / Batteries / Deforestation / Forced Labour (co-existence), Critical Raw Materials (compliance metric), Taxonomy Art. 18" },
+  { name:"CSRD", full:"Corporate Sustainability Reporting Directive", category:"Corporate sustainability", nature:"Reporting", stage:"In force – applying later", stageClass:"in-force-partial",
+    links:"CSDDD (reporting arm), ESRS (required standards), SFDR (data feed), Taxonomy Art. 18 (alignment reporting)" },
+  { name:"ESRS", full:"European Sustainability Reporting Standards", category:"Corporate sustainability", nature:"Reporting", stage:"In force – applying later", stageClass:"in-force-partial",
+    links:"CSRD (mandatory standards), CSDDD (discharge of obligations), Taxonomy (wider scope than CSDDD)" },
+  { name:"SFDR", full:"Sustainable Finance Disclosure Regulation", category:"Finance sector", nature:"Reporting", stage:"Pending / under revision", stageClass:"pending",
+    links:"CSRD (data source for portfolio companies), CSDDD (interrelation unclear post-Omnibus), Taxonomy DNSH / Art. 18" },
+  { name:"Taxonomy Regulation", full:"Sustainable Finance Taxonomy Regulation (Green Taxonomy)", category:"Finance sector", nature:"Rules", stage:"In force", stageClass:"in-force",
+    links:"CSDDD / CSRD (Art. 18 minimum safeguards proxy), SFDR (DNSH link), Social Taxonomy (proposed extension)" },
+  { name:"Social Taxonomy", full:"Taxonomy extension – the Social Taxonomy", category:"Finance sector", nature:"Rules", stage:"Stalled", stageClass:"stalled",
+    links:"Green Taxonomy (extension), CSDDD / CSRD / SFDR (future interplay unclear)" },
+  { name:"ESG Ratings Regulation", full:"Regulation on ESG Rating Activities", category:"Finance sector", nature:"Rules", stage:"In force", stageClass:"in-force",
+    links:"CSRD (data underlying ratings), Benchmarking Regulation (related finance framework)" },
+  { name:"Benchmarking Regulation", full:"EU Benchmarks Regulation", category:"Finance sector", nature:"Rules", stage:"In force", stageClass:"in-force",
+    links:"CSRD (ESG metric source), SFDR (reporting requirements)" },
+  { name:"Conflict Minerals Regulation", full:"Conflict Minerals Regulation (3TG)", category:"Trade & import/export", nature:"Import control", stage:"In force", stageClass:"in-force",
+    links:"CSDDD (sector-specific DD, expected to co-exist), Batteries Regulation (related supply chain ecosystem)" },
+  { name:"Timber Regulation", full:"EU Timber Regulation", category:"Trade & import/export", nature:"Import control", stage:"In force", stageClass:"in-force",
+    links:"Deforestation Regulation (being repealed; transitional overlap until end-2027)" },
+  { name:"Deforestation Regulation", full:"Regulation on Deforestation-Free Products", category:"Trade & import/export", nature:"Import control", stage:"Pending / under revision", stageClass:"pending",
+    links:"Timber Regulation (successor), CSDDD (explicit co-existence provision)" },
+  { name:"Forced Labour Regulation", full:"EU Product Ban for Goods Made with Forced Labour", category:"Trade & import/export", nature:"Import control", stage:"In force – applying later", stageClass:"in-force-partial",
+    links:"CSDDD (DD performance considered during enforcement), SFDR (PAI clarification needed)" },
+  { name:"Batteries Regulation", full:"Batteries Regulation", category:"Green transition", nature:"Due diligence", stage:"In force", stageClass:"in-force",
+    links:"CSDDD (sector-specific DD, co-existence), CSRD (reporting discharge), Conflict Minerals (supply chain ecosystem)" },
+  { name:"Critical Raw Materials Act", full:"Critical Raw Materials Act", category:"Green transition", nature:"Rules", stage:"In force", stageClass:"in-force",
+    links:"CSDDD (compliance = factor for strategic project status), Conflict Minerals (mineral supply chain)" },
+  { name:"Digital Services Act", full:"Digital Services Act", category:"Digital ecosystem", nature:"Rules", stage:"In force", stageClass:"in-force",
+    links:"GDPR (applies without prejudice), AI Act (AI Act does not affect DSA/GDPR), CSRD (reporting obligations)" },
+  { name:"AI Act", full:"Artificial Intelligence Act", category:"Digital ecosystem", nature:"Rules", stage:"In force – applying later", stageClass:"in-force-partial",
+    links:"DSA / GDPR (without prejudice), CSDDD (DD alignment needed), GPSR (safety net for out-of-scope products)" },
+  { name:"General Product Safety Regulation", full:"General Product Safety Regulation (GPSR)", category:"Digital ecosystem", nature:"Rules", stage:"In force", stageClass:"in-force",
+    links:"DSA (without prejudice), AI Act (safety net for AI-adjacent out-of-scope products)" },
+  { name:"GDPR", full:"General Data Protection Regulation", category:"Digital ecosystem", nature:"Rules", stage:"In force", stageClass:"in-force",
+    links:"DSA (without prejudice), AI Act (without prejudice)" },
+  { name:"Dual-Use Regulation", full:"Regulation on Trade of Dual-Use Items", category:"Trade & import/export", nature:"Trade control", stage:"In force", stageClass:"in-force",
+    links:"Standalone instrument; Internal Compliance Programme structure aligns with UNGP risk management approach" },
+  { name:"Public Procurement Directive", full:"Public Procurement Directive", category:"Public procurement", nature:"Rules", stage:"Pending / under revision", stageClass:"pending",
+    links:"CSDDD (Art. 31: CSDDD compliance qualifies as social/environmental criterion in award decisions)" },
 ];
 
-const edges = [
-  { s:"CSDDD",    t:"CSRD",      label:"relies on for disclosure" },
-  { s:"CSRD",     t:"ESRS",      label:"requires use of" },
-  { s:"CSRD",     t:"SFDR",      label:"data feeds into" },
-  { s:"CSDDD",    t:"CONFLICTS", label:"co-exists with sector DD" },
-  { s:"CSDDD",    t:"BATTERIES", label:"co-exists with sector DD" },
-  { s:"CSDDD",    t:"DEFOREST",  label:"explicit co-existence" },
-  { s:"CSDDD",    t:"FORCED",    label:"DD evidence used in enforcement" },
-  { s:"CSDDD",    t:"CRMA",      label:"compliance = strategic metric" },
-  { s:"CSDDD",    t:"TAXON",     label:"Art. 18 safeguards (unclear)" },
-  { s:"CSDDD",    t:"PPD",       label:"Art. 31 procurement criterion" },
-  { s:"CSRD",     t:"TAXON",     label:"alignment reporting" },
-  { s:"SFDR",     t:"TAXON",     label:"DNSH / PAI indicators" },
-  { s:"TAXON",    t:"STAXON",    label:"future extension" },
-  { s:"TIMBER",   t:"DEFOREST",  label:"replaced by" },
-  { s:"BATTERIES",t:"CSRD",      label:"reporting discharge" },
-  { s:"BATTERIES",t:"CONFLICTS", label:"related ecosystem" },
-  { s:"CRMA",     t:"CONFLICTS", label:"mineral supply chain" },
-  { s:"DSA",      t:"GDPR",      label:"without prejudice" },
-  { s:"AIACT",    t:"DSA",       label:"without prejudice" },
-  { s:"AIACT",    t:"GDPR",      label:"without prejudice" },
-  { s:"AIACT",    t:"GPSR",      label:"safety net for out-of-scope" },
-  { s:"ESGREG",   t:"CSRD",      label:"data underlying ratings" },
-  { s:"BENCH",    t:"SFDR",      label:"ESG metric overlap" },
-];
-
-const positions = {
-  CSDDD:    [340, 220],
-  CSRD:     [190, 160],
-  ESRS:     [100, 90],
-  SFDR:     [190, 320],
-  TAXON:    [340, 380],
-  STAXON:   [260, 470],
-  ESGREG:   [490, 310],
-  BENCH:    [590, 380],
-  CONFLICTS:[500, 130],
-  TIMBER:   [590, 60],
-  DEFOREST: [590, 190],
-  FORCED:   [590, 270],
-  BATTERIES:[490, 50],
-  CRMA:     [440, 320],
-  DSA:      [100, 290],
-  AIACT:    [100, 390],
-  GPSR:     [60,  480],
-  GDPR:     [190, 460],
-  DUALUSE:  [590, 460],
-  PPD:      [340, 500],
+const natureClass = {
+  "Due diligence": "due",
+  "Reporting":     "rep",
+  "Import control":"imp",
+  "Trade control": "trade",
+  "Rules":         "rules"
 };
 
-const W = 680, H = 560;
-const canvas = document.getElementById('net-canvas');
-canvas.width = W; canvas.height = H;
+let sortKey = "name", sortAsc = true;
 
-// Scale canvas for retina
-const dpr = window.devicePixelRatio || 1;
-canvas.width  = W * dpr;
-canvas.height = H * dpr;
-canvas.style.width  = W + 'px';
-canvas.style.height = H + 'px';
-const ctx = canvas.getContext('2d');
-ctx.scale(dpr, dpr);
-
-const nodeMap = {};
-nodes.forEach(n => {
-  n.x = positions[n.id][0];
-  n.y = positions[n.id][1];
-  nodeMap[n.id] = n;
-});
-
-let selected = null, hovered = null;
-
-const EDGE_DIM  = isDark ? 'rgba(200,198,188,0.14)' : 'rgba(100,100,90,0.16)';
-const EDGE_HIGH = isDark ? 'rgba(200,198,188,0.65)' : 'rgba(50,50,45,0.65)';
-
-function getConnected(id) {
-  const s = new Set();
-  edges.forEach(e => {
-    if (e.s === id) s.add(e.t);
-    if (e.t === id) s.add(e.s);
-  });
-  return s;
+function sort(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = true; }
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+  const hEl = document.getElementById('h-' + key);
+  if (hEl) hEl.classList.add('sorted');
+  render();
 }
 
-function draw() {
-  ctx.clearRect(0, 0, W, H);
-  const active = selected || hovered;
-  const connSet = active ? getConnected(active) : null;
+function render() {
+  const q    = document.getElementById('search').value.toLowerCase();
+  const cat  = document.getElementById('cat').value;
+  const nat  = document.getElementById('nature').value;
+  const stg  = document.getElementById('stage').value;
 
-  edges.forEach(e => {
-    const a = nodeMap[e.s], b = nodeMap[e.t];
-    const lit = active && (e.s === active || e.t === active);
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.lineTo(b.x, b.y);
-    ctx.strokeStyle = lit ? EDGE_HIGH : EDGE_DIM;
-    ctx.lineWidth = lit ? 1.5 : 0.8;
-    ctx.setLineDash(lit ? [] : [3, 3]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+  let rows = data.filter(r =>
+    (!q   || r.name.toLowerCase().includes(q) || r.full.toLowerCase().includes(q) || r.links.toLowerCase().includes(q)) &&
+    (!cat || r.category === cat) &&
+    (!nat || r.nature   === nat) &&
+    (!stg || r.stage    === stg)
+  );
+
+  rows.sort((a, b) => {
+    const av = a[sortKey] || '', bv = b[sortKey] || '';
+    return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
   });
 
-  nodes.forEach(n => {
-    const isSel  = selected === n.id;
-    const isHov  = hovered  === n.id;
-    const isConn = connSet  && connSet.has(n.id);
-    const isDim  = active   && !isSel && !isConn && !isHov;
+  document.getElementById('count').textContent =
+    rows.length + ' of ' + data.length + ' regulations shown';
 
-    ctx.globalAlpha = isDim ? 0.25 : 1;
-
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, n.r + (isSel ? 3 : isHov ? 2 : 0), 0, Math.PI * 2);
-    ctx.fillStyle = catColor[n.cat];
-    ctx.fill();
-
-    if (isSel) {
-      ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
-    const lines = n.label.split('\n');
-    ctx.fillStyle = 'rgba(255,255,255,0.95)';
-    ctx.font = `${lines.length > 1 ? 9.5 : 10.5}px 'Inter', sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const lh = 12;
-    const startY = n.y - ((lines.length - 1) * lh / 2);
-    lines.forEach((l, i) => ctx.fillText(l, n.x, startY + i * lh));
-
-    ctx.globalAlpha = 1;
-  });
-}
-
-function getNodeAt(mx, my) {
-  const rect = canvas.getBoundingClientRect();
-  const x = (mx - rect.left) * (W / rect.width);
-  const y = (my - rect.top)  * (H / rect.height);
-  return nodes.find(n => Math.hypot(n.x - x, n.y - y) <= n.r + 5) || null;
-}
-
-canvas.addEventListener('mousemove', e => {
-  const node = getNodeAt(e.clientX, e.clientY);
-  hovered = node ? node.id : null;
-  canvas.style.cursor = node ? 'pointer' : 'default';
-  const tip = document.getElementById('tooltip');
-  if (node && !selected) {
-    tip.style.display = 'block';
-    tip.style.left = (e.clientX + 14) + 'px';
-    tip.style.top  = (e.clientY - 10) + 'px';
-    tip.textContent = node.desc.split('.')[0] + '.';
-  } else {
-    tip.style.display = 'none';
+  const tbody = document.getElementById('tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty">No regulations match these filters.</td></tr>';
+    return;
   }
-  draw();
-});
 
-canvas.addEventListener('mouseleave', () => {
-  hovered = null;
-  document.getElementById('tooltip').style.display = 'none';
-  draw();
-});
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>
+        <span style="font-size:13px;font-weight:500;display:block">${r.name}</span>
+        <span style="font-size:11px;color:var(--color-text-secondary)">${r.full}</span>
+      </td>
+      <td style="color:var(--color-text-secondary);font-size:12px">${r.category}</td>
+      <td><span class="pill ${natureClass[r.nature]}">${r.nature}</span></td>
+      <td><span class="stage-badge ${r.stageClass}">${r.stage}</span></td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">${r.links}</td>
+    </tr>
+  `).join('');
+}
 
-canvas.addEventListener('click', e => {
-  const node = getNodeAt(e.clientX, e.clientY);
-  selected = (node && selected !== node.id) ? node.id : null;
-  const panel = document.getElementById('detail-panel');
-  if (selected) {
-    const n = nodeMap[selected];
-    const connected = [...getConnected(selected)]
-      .map(id => nodeMap[id].label.replace('\n', ' '))
-      .join(', ');
-    panel.innerHTML = `<strong>${n.label.replace('\n', ' ')}</strong>${n.desc}<br><br><span style="font-size:12px;color:var(--color-text-tertiary)">Connected to: ${connected || '—'}</span>`;
-  } else {
-    panel.innerHTML = 'Click any regulation node to see its connections and a short description.';
-  }
-  document.getElementById('tooltip').style.display = 'none';
-  draw();
-});
-
-draw();
+render();
 </script>
 </body>
 </html>
